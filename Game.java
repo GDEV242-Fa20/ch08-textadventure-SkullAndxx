@@ -11,8 +11,13 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * 10-26-20
+ * Added look and eat into the process command. 
+ * Coupling with the CommandWord class.
+ * Added look(), eat() methods.
+ * 
+ * @author  Erick Rubio
+ * @version 2020.10.26
  */
 
 public class Game 
@@ -34,28 +39,57 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room outside, theater, bar, garden, gym, court, bathroom,
+        store1, store2, store3,  
+        office1, office2, office3, 
+        resturant1, resturant2, resturant3;
       
-        // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        // create the rooms (16 for a 4x4 grid)
+        outside = new Room("outside the main entrance of the mall");
+        theater = new Room("in a movie theater");
+        bar     = new Room("in the mall bar");
+        gym     = new Room("in the gym");
+        garden  = new Room("in the mall garden area");
+        court   = new Room("in the mall food court");
+        bathroom= new Room("in the unisex bathroom");
+        
+        store1  = new Room("in the mall clothing store");
+        store2  = new Room("in a toy store");
+        store3  = new Room("in candle store");
+
+        office1 = new Room("in a computing lab");
+        office2 = new Room("in the computing admin office");
+        office3 = new Room("mall security office");
+        
+        resturant1 = new Room("in a Chinese food resturant");
+        resturant1 = new Room("in a burger joint");
+        resturant1 = new Room("in a fancy dining hall");     
         
         // initialise room exits
+        //Grid:1,1-1,4
         outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
-
+        outside.setExit("south", garden);
+        
+        garden.setExit("east", office3);
+        garden.setExit("south",bar);
+        garden.setExit("north",outside);
+        
+        bar.setExit("east", store1);
+        bar.setExit("south",store3);
+        bar.setExit("north",garden);
+        
+        store3.setExit("east", gym);
+        bar.setExit("north",bar);        
+        
+        //Grid 2,1 - 2,4
         theater.setExit("west", outside);
 
-        pub.setExit("east", outside);
+        // pub.setExit("east", outside);
 
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
+        // office1.setExit("north", outside);
+        // office2.setExit("east", office);
 
-        office.setExit("west", lab);
+        // office.setExit("west", lab);
 
         currentRoom = outside;  // start game outside
     }
@@ -95,6 +129,8 @@ public class Game
      * Given a command, process (that is: execute) the command.
      * @param command The command to be processed.
      * @return true If the command ends the game, false otherwise.
+     * 
+     * 8.14 + 8.15
      */
     private boolean processCommand(Command command) 
     {
@@ -114,7 +150,15 @@ public class Game
             case GO:
                 goRoom(command);
                 break;
+                
+            case LOOK:
+                look();
+                break;
 
+            case EAT:
+                eat();
+                break;
+                
             case QUIT:
                 wantToQuit = quit(command);
                 break;
@@ -135,6 +179,7 @@ public class Game
         System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
+        //8.16 print commands using parser
         parser.showCommands();
     }
 
@@ -179,4 +224,18 @@ public class Game
             return true;  // signal that we want to quit
         }
     }
+    /**
+     * Look around a room
+     * 8.14
+       */
+    private void look(){
+        System.out.println(currentRoom.getLongDescription());
+    }
+    /**
+     * Eat something
+     * 8.15
+       */
+    private void eat(){
+        System.out.println("You have eaten now and are not hungry any more");
+    }    
 }

@@ -58,6 +58,7 @@ public class Parser
 
     /**
      * Print out a list of valid command words.
+     * 8.16
      */
     public void showCommands()
     {
