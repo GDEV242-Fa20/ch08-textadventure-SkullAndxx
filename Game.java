@@ -62,8 +62,8 @@ public class Game
         office3 = new Room("mall security office");
         
         resturant1 = new Room("in a Chinese food resturant");
-        resturant1 = new Room("in a burger joint");
-        resturant1 = new Room("in a fancy dining hall");     
+        resturant2 = new Room("in a burger joint");
+        resturant3 = new Room("in a fancy dining hall");     
         
         // initialise room exits
         //Grid:1,1-1,4
@@ -82,14 +82,57 @@ public class Game
         bar.setExit("north",bar);        
         
         //Grid 2,1 - 2,4
+        theater.setExit("east", resturant1);
+        theater.setExit("south", office3);
         theater.setExit("west", outside);
+        
+        office3.setExit("east", court);
+        office3.setExit("south", store1);
+        office3.setExit("west", garden);  
+        office3.setExit("north", theater);
+        
+        store1.setExit("east", resturant3);
+        store1.setExit("south", gym);
+        store1.setExit("west", bar);  
+        store1.setExit("north", office3);
+        
+        gym.setExit("east", office2);
+        gym.setExit("west", store3);
+        gym.setExit("north", store1);
+        
+        //grid 3,1 - 3,4
+        resturant1.setExit("east", bathroom);
+        resturant1.setExit("south", court);
+        resturant1.setExit("west", theater);
+        
+        court.setExit("east", resturant2);
+        court.setExit("south", resturant3);
+        court.setExit("west", office3);  
+        court.setExit("north", resturant1);
+        
+        resturant3.setExit("east", store2);
+        resturant3.setExit("south", office2);
+        resturant3.setExit("west", store1);  
+        resturant3.setExit("north", court);
+        
+        office2.setExit("east", office1);
+        office2.setExit("west", gym);
+        office2.setExit("north", resturant3);        
 
-        // pub.setExit("east", outside);
-
-        // office1.setExit("north", outside);
-        // office2.setExit("east", office);
-
-        // office.setExit("west", lab);
+        //grid 4,1 - 4,4
+        bathroom.setExit("south", resturant2);
+        bathroom.setExit("west", resturant1);
+        
+        resturant2.setExit("south", store2);
+        resturant2.setExit("west", court);  
+        resturant2.setExit("north", bathroom);
+        
+        store2.setExit("south", office1);
+        store2.setExit("west", resturant3);  
+        store2.setExit("north", resturant2);
+        
+        office1.setExit("west", office2);
+        office1.setExit("north", store2);   
 
         currentRoom = outside;  // start game outside
     }
@@ -238,4 +281,11 @@ public class Game
     private void eat(){
         System.out.println("You have eaten now and are not hungry any more");
     }    
+    /**
+     * Java main class to run in cmd mode.
+       */
+    public static void main(String[] args){
+        Game play = new Game();
+        play.play();
+    }
 }
