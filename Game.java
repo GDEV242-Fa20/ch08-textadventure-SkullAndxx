@@ -11,8 +11,13 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * 10-26-20
+ * Added look and eat into the process command. 
+ * Coupling with the CommandWord class.
+ * Added look(), eat() methods.
+ * 
+ * @author  Erick Rubio
+ * @version 2020.10.26
  */
 
 public class Game 
@@ -34,28 +39,100 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room outside, theater, bar, garden, gym, court, bathroom,
+        store1, store2, store3,  
+        office1, office2, office3, 
+        resturant1, resturant2, resturant3;
       
-        // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        // create the rooms (16 for a 4x4 grid)
+        outside = new Room("outside the main entrance of the mall");
+        theater = new Room("in a movie theater");
+        bar     = new Room("in the mall bar");
+        gym     = new Room("in the gym");
+        garden  = new Room("in the mall garden area");
+        court   = new Room("in the mall food court");
+        bathroom= new Room("in the unisex bathroom");
+        
+        store1  = new Room("in the mall clothing store");
+        store2  = new Room("in a toy store");
+        store3  = new Room("in candle store");
+
+        office1 = new Room("in a computing lab");
+        office2 = new Room("in the computing admin office");
+        office3 = new Room("mall security office");
+        
+        resturant1 = new Room("in a Chinese food resturant");
+        resturant2 = new Room("in a burger joint");
+        resturant3 = new Room("in a fancy dining hall");     
         
         // initialise room exits
+        //Grid:1,1-1,4
         outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
-
+        outside.setExit("south", garden);
+        
+        garden.setExit("east", office3);
+        garden.setExit("south",bar);
+        garden.setExit("north",outside);
+        
+        bar.setExit("east", store1);
+        bar.setExit("south",store3);
+        bar.setExit("north",garden);
+        
+        store3.setExit("east", gym);
+        bar.setExit("north",bar);        
+        
+        //Grid 2,1 - 2,4
+        theater.setExit("east", resturant1);
+        theater.setExit("south", office3);
         theater.setExit("west", outside);
+        
+        office3.setExit("east", court);
+        office3.setExit("south", store1);
+        office3.setExit("west", garden);  
+        office3.setExit("north", theater);
+        
+        store1.setExit("east", resturant3);
+        store1.setExit("south", gym);
+        store1.setExit("west", bar);  
+        store1.setExit("north", office3);
+        
+        gym.setExit("east", office2);
+        gym.setExit("west", store3);
+        gym.setExit("north", store1);
+        
+        //grid 3,1 - 3,4
+        resturant1.setExit("east", bathroom);
+        resturant1.setExit("south", court);
+        resturant1.setExit("west", theater);
+        
+        court.setExit("east", resturant2);
+        court.setExit("south", resturant3);
+        court.setExit("west", office3);  
+        court.setExit("north", resturant1);
+        
+        resturant3.setExit("east", store2);
+        resturant3.setExit("south", office2);
+        resturant3.setExit("west", store1);  
+        resturant3.setExit("north", court);
+        
+        office2.setExit("east", office1);
+        office2.setExit("west", gym);
+        office2.setExit("north", resturant3);        
 
-        pub.setExit("east", outside);
-
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
-
-        office.setExit("west", lab);
+        //grid 4,1 - 4,4
+        bathroom.setExit("south", resturant2);
+        bathroom.setExit("west", resturant1);
+        
+        resturant2.setExit("south", store2);
+        resturant2.setExit("west", court);  
+        resturant2.setExit("north", bathroom);
+        
+        store2.setExit("south", office1);
+        store2.setExit("west", resturant3);  
+        store2.setExit("north", resturant2);
+        
+        office1.setExit("west", office2);
+        office1.setExit("north", store2);   
 
         currentRoom = outside;  // start game outside
     }
@@ -95,6 +172,8 @@ public class Game
      * Given a command, process (that is: execute) the command.
      * @param command The command to be processed.
      * @return true If the command ends the game, false otherwise.
+     * 
+     * 8.14 + 8.15
      */
     private boolean processCommand(Command command) 
     {
@@ -114,7 +193,15 @@ public class Game
             case GO:
                 goRoom(command);
                 break;
+                
+            case LOOK:
+                look();
+                break;
 
+            case EAT:
+                eat();
+                break;
+                
             case QUIT:
                 wantToQuit = quit(command);
                 break;
@@ -135,6 +222,7 @@ public class Game
         System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
+        //8.16 print commands using parser
         parser.showCommands();
     }
 
@@ -178,5 +266,26 @@ public class Game
         else {
             return true;  // signal that we want to quit
         }
+    }
+    /**
+     * Look around a room
+     * 8.14
+       */
+    private void look(){
+        System.out.println(currentRoom.getLongDescription());
+    }
+    /**
+     * Eat something
+     * 8.15
+       */
+    private void eat(){
+        System.out.println("You have eaten now and are not hungry any more");
+    }    
+    /**
+     * Java main class to run in cmd mode.
+       */
+    public static void main(String[] args){
+        Game play = new Game();
+        play.play();
     }
 }
